@@ -31,6 +31,8 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
         required_columns = ["month", "AmtPaid", "IncreasedNM"]
 
         if df is not None:
+            st.write(f"Preview 3 rows of data from **{selected_file}**:")
+            st.dataframe(df.head(3).style.set_table_attributes('style="width: 100%; border-collapse: collapse;"'))
             if all(col in df.columns for col in required_columns) and len(df.columns) == len(required_columns):
                 st.header("🌟 View Analysis Results")
                 figures = []
@@ -71,6 +73,7 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                     px = [pt[0] for pt in path]
                     py = [pt[1] for pt in path]
                     fig.add_trace(go.Scatter(x=px, y=py, mode='lines', line=dict(color='red', dash='dot'), name='Path'))
+                    fig.update_layout(title='Accumulated Cost')
                     return fig
 
                 def normalize(sequence):

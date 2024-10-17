@@ -32,6 +32,8 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
         required_columns = ["month", "AmtPaid", "IncreasedNM"]
 
         if df is not None:
+            st.write(f"Preview 3 rows of data from **{selected_file}**:")
+            st.dataframe(df.head(3).style.set_table_attributes('style="width: 100%; border-collapse: collapse;"'))
             if all(col in df.columns for col in required_columns) and len(df.columns) == len(required_columns):
                 st.header("🌟 View Analysis Results")
                 figures = []

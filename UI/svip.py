@@ -109,11 +109,11 @@ st.markdown("""
     Welcome to our prediction tool! This tool aims to identify which of the newly joined members belong to the top 30% of high-value customers based on their historical spending data.
 
 To achieve this goal, we employ a Multiple Classifier System that integrates five advanced models:
-- **Logistic Regression**: Estimates the probability of customer spending.
-- **Support Vector Machine**: Effectively handles high-dimensional data to enhance classification performance.
-- **K-NN (K-Nearest Neighbors)**: Predicts spending based on the behavior of similar customers.
-- **Multilayer Perceptron**: A deep learning model that captures complex spending patterns.
-- **Random Forest**: Utilizes an ensemble of decision trees to improve prediction stability.
+- **Logistic Regression (LR)**: Estimates the probability of customer spending.
+- **Support Vector Machine (SVM)**: Effectively handles high-dimensional data to enhance classification performance.
+- **K-Nearest Neighbors (K-NN)**: Predicts spending based on the behavior of similar customers.
+- **Multilayer Perceptron (MLP)**: A deep learning model that captures complex spending patterns.
+- **Random Forest (RF)**: Utilizes an ensemble of decision trees to improve prediction stability.
 
 The Hybrid System can analyze the outputs of these models collectively, increasing the accuracy and reliability of predictions. By precisely identifying high-spending customers, you can better tailor your marketing strategies to enhance customer satisfaction and loyalty.
 
@@ -140,6 +140,8 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                             "NFavinFavShop_x"]
 
         if df is not None:
+            st.write(f"Preview 3 rows of data from **{selected_file}**:")
+            st.dataframe(df.head(3).style.set_table_attributes('style="width: 100%; border-collapse: collapse;"'))
             if all(col in df.columns for col in required_columns) and len(df.columns) == len(required_columns):
                 st.header("🌟 View Analysis Results")
 
@@ -156,30 +158,34 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                 members, scaler, stacking_model = load_all_models(base_model_filenames, stacked_model_filename)
                 X_scaled = scaler.transform(X)
                 stacked_predictions = stacked_dataset(members, X_scaled, X)
+                stacked_results = pd.DataFrame(stacked_predictions)
+                stacked_results.replace({1: 'SVIP', 0: 'member'}, inplace=True)
                 final_predictions = stacking_model.predict(stacked_predictions)
-
-                fig_all, cluster_all = generate_cluster_radar_chart(X, Ka, 'Clustering Results')
-
-                df['Cluster'] = cluster_all
                 df['Predictions'] = final_predictions
+                fig_all, cluster_all = generate_cluster_radar_chart(X, Ka, 'Clustering Results')
+                df['Cluster'] = cluster_all
                 df['User_Importance'] = df['Predictions'].apply(lambda x: 'SVIP' if x == 1 else 'Member')
-                df['MemGen_x'] = df['MemGen_x'].apply(lambda x: 'Male' if x == 1 else 'Female')                
-                results = df[['MemID', 'MemGen_x', 'MemAge_x', 'MemDuration_M_x', 'User_Importance', 'Cluster']].rename(columns={
+                df['MemGen_x'] = df['MemGen_x'].apply(lambda x: 'Male' if x == 1 else 'Female')
+                results = pd.concat([df.reset_index(drop=True), stacked_results.reset_index(drop=True)], axis=1)                
+                results = results[['MemID', 'MemGen_x', 'MemAge_x', 'MemDuration_M_x', 'User_Importance', 'Cluster',0,1,2,3,4]].rename(columns={
                                 'MemName': 'Name',
                                 'MemGen_x': 'Gender',
                                 'MemAge_x': 'Age',
                                 'MemDuration_M_x': 'Duration (Months)',
-                                'User_Importance': 'Importance'
+                                'User_Importance': 'Importance',
+                                0:'LR Result',
+                                1:'SVM Result',
+                                2:'K-NN Result',
+                                3:'MLP Result',
+                                4:'RF Result',
                             })
+                
                 def highlight_svip(row):
                     return ['background-color: yellow' if row['Importance'] == 'SVIP' else '' for _ in row]
-
                 styled_results = results.style.apply(highlight_svip, axis=1).set_table_attributes('style="width:100%; border-collapse: collapse;"')
-                
                 # 性别选择
                 gender_option = st.selectbox("Select Gender:", options=["All", "Male", "Female"])
                 importance_option = st.selectbox("Select User Importance:", options=["All", "SVIP", "Member"])
-
                 # 过滤结果
                 filtered_results = results.copy()
                 if gender_option != "All":
@@ -192,7 +198,15 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                 else:
                     st.dataframe(styled_results)
                 
-                st.plotly_chart(fig_all, use_container_width=True)        
+                st.plotly_chart(fig_all, use_container_width=True)       
+
+                cluster_counts = pd.Series(cluster_all).value_counts().reset_index()
+                cluster_counts.columns = ['Cluster', 'Count']
+                cluster_counts['Renamed'] = ['Cluster ' + str(i) for i in cluster_counts['Cluster']]
+                colors = ['#7eefa1', '#ff2a2b', '#ffabab', '#2ab09d', '#84c9ff', '#0068c9'] 
+                pie_fig = go.Figure(data=[go.Pie(labels=cluster_counts['Renamed'], values=cluster_counts['Count'], hole=0.3, marker=dict(colors=colors))])
+                pie_fig.update_layout(title_text="Cluster Proportions")
+                st.plotly_chart(pie_fig, use_container_width=True) 
 
                 #性别比例图    
                 svip_count = df[df['User_Importance'] == 'SVIP'].shape[0]
@@ -204,7 +218,7 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                         'User Type': ['SVIP', 'Member'],
                         'Count': [svip_count, member_count]
                     })
-                    color_sequence = ['#ef5350', '#ffee58']
+                    color_sequence = ['#e0e0e0','#ffee58']
                     fig = px.pie(pie_data, values='Count', names='User Type', title='SVIP and Member Proportions', hole=0.2, color_discrete_sequence=color_sequence)
                     fig.update_traces(textinfo='percent+label', marker=dict(line=dict(color='#FFFFFF', width=2)))
                     fig.update_layout(legend_title_text='User Type', legend=dict(orientation="h"))

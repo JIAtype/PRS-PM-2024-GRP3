@@ -26,7 +26,7 @@ if os.listdir(UPLOAD_FOLDER):
             st.error("Please select a valid file to delete.")
 
         # 显示数据
-        st.write(f"### Data from **{selected_file}**:")
+        st.write(f"###Raw Data from **{selected_file}**:")
         st.dataframe(df.style.set_table_attributes('style="width: 100%; border-collapse: collapse;"'))
 
 else:

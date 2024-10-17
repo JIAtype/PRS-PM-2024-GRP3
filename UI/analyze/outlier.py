@@ -37,6 +37,8 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                             "NGinFavShop_y", "NFavinFavShop_y"]
 
         if df is not None:
+            st.write(f"Preview 3 rows of data from **{selected_file}**:")
+            st.dataframe(df.head(3).style.set_table_attributes('style="width: 100%; border-collapse: collapse;"'))
             if all(col in df.columns for col in required_columns) and len(df.columns) == len(required_columns):
                 st.header("🌟 View Analysis Results")
                 figures = []
@@ -60,7 +62,7 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                 fig = px.histogram(df, 
                                 x='MemAge_x', 
                                 color='Gender', 
-                                nbins=20,  # Set the number of bins
+                                nbins=50,  # Set the number of bins
                                 color_discrete_map={'Female': '#ec407a', 'Male': '#29b6f6'},  # Set the colors for females and males
                                 labels={'MemAge_x': 'Age', 'Gender': 'Gender'},
                                 title='Age Distribution for Males and Females')
@@ -91,7 +93,7 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                 fig = px.histogram(df, 
                                 x='MemDuration_M_x', 
                                 color='Gender', 
-                                nbins=20,  # Set the number of bins
+                                nbins=50,  # Set the number of bins
                                 color_discrete_map={'Female': '#ec407a', 'Male': '#29b6f6'},  # Set the colors for females and males
                                 labels={'MemDuration_M_x': 'Membership Duration (Months)', 'Gender': 'Gender'},
                                 title='Duration Distribution for Males and Females')
@@ -122,7 +124,7 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                 fig = px.histogram(df, 
                                 x='ASPT_x', 
                                 color='Gender', 
-                                nbins=20,  # Set the number of bins
+                                nbins=50,  # Set the number of bins
                                 color_discrete_map={'Female': '#ec407a', 'Male': '#29b6f6'},  # Set the colors for females and males
                                 labels={'ASPT_x': 'Averaged Spending Per Transaction', 'Gender': 'Gender'},
                                 title='ASPT Distribution for Males and Females')
