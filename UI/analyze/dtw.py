@@ -89,9 +89,9 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                         mode='lines', line=dict(color='red', dash='dot'), name='Warping Line',
                         showlegend=(idx1 == path[0][0] and idx2 == path[0][1])))
                     fig.add_trace(go.Scatter(x=month_data, y=s1_normalized,
-                    mode='lines+markers', name="Amount Paid (Normalized)", marker=dict(color='#1f77b4', size=4)))
+                    mode='lines+markers', name="Amount Paid (Normalized)", marker=dict(color='#1f77b4', size=6)))
                     fig.add_trace(go.Scatter(x=month_data, y=s2_normalized,
-                    mode='lines+markers', name="Increased Number of Member (Normalized)", marker=dict(color='#ff7f0f', size=4)))
+                    mode='lines+markers', name="Increased Number of Member (Normalized)", marker=dict(color='#ff7f0f', size=6)))
                     fig.update_layout(title='Warping Plot', xaxis_title=xlab, yaxis_title=ylab, xaxis=dict(tickformat="%Y"))
                     return fig
 
