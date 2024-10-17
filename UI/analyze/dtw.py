@@ -44,10 +44,10 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=df['month'], y=df['AmtPaid'], 
                 mode='lines+markers', name='Amount Paid (Normalized)',
-                line=dict(color='#1f77b4', width=2), marker=dict(size=6)))
+                line=dict(color='#1f77b4', width=2), marker=dict(color='#5fad56', size=6)))
                 fig.add_trace(go.Scatter(x=df['month'], y=df['IncreasedNM'], 
                 mode='lines+markers', name='Increased Number of Member (Normalized)',
-                line=dict(color='#ff7f0e', width=2), marker=dict(size=6)))
+                line=dict(color='#ff7f0e', width=2), marker=dict(color='#1446a0', size=6)))
                 fig.update_layout(
                     title='Normalized Values Over Time',
                     xaxis_title='Month',
