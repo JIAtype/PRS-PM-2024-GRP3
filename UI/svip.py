@@ -186,7 +186,7 @@ if os.path.isdir(UPLOAD_FOLDER) and os.listdir(UPLOAD_FOLDER):
                     filtered_results = filtered_results[filtered_results['Gender'] == gender_option]
                 if importance_option != "All":
                     filtered_results = filtered_results[filtered_results['Importance'] == importance_option]
-
+                st.markdown("**Note:** The highlighted rows represent SVIP users (high-value customers).")
                 if not filtered_results.empty:
                     st.dataframe(filtered_results.style.apply(highlight_svip, axis=1).set_table_attributes('style="width:100%; border-collapse: collapse;"'))
                 else:
