@@ -19,5 +19,3 @@ if uploaded_files:
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         st.success(f"✅ File '{uploaded_file.name}' has been successfully uploaded to `{file_path}`")
-# else:
-#     st.warning('Note: No files are being uploaded right now.', icon="⚠️")
