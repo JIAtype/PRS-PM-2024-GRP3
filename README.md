@@ -5,7 +5,7 @@ Group 3 (as known as Fruit)
 
 All member’s Full name:
 Chen Jia /
-Dennis Lim Teck Heng 
+Dennis Lim Teck Heng /
 Koo Ley Ling /
 Yin Zihan
 
